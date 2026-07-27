@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "routellm"
+version = "0.1.0"
+description = "A production-grade, zero-dependency-bloat Smart LLM Router & Fallback Proxy"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "RouteLLM Team", email = "info@routellm.dev" }
+]
+keywords = ["llm", "proxy", "router", "openai", "fallback", "fastapi", "ai-infrastructure"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.28.0",
+    "httpx>=0.27.0",
+    "pydantic>=2.6.0",
+    "pydantic-settings>=2.2.0",
+    "tiktoken>=0.6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[project.scripts]
+routellm = "routellm.main:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/routellm"]
