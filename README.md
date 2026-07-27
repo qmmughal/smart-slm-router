@@ -1,5 +1,10 @@
 # RouteLLM 🚀
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com)
+[![OpenAI Compatible](https://img.shields.io/badge/API-OpenAI%20Compatible-412991.svg)](https://platform.openai.com/docs/api-reference)
+
 > **Production-grade, Zero-Dependency-Bloat Smart LLM Router & Fallback Proxy**
 
 `RouteLLM` is an ultra-fast (<15ms decision latency), asynchronous local proxy fully compatible with the **OpenAI API specification**. It intercepts inbound LLM requests from Python applications, evaluates prompt complexity locally using sub-millisecond heuristics, routes cheap/simple queries to Small Language Models (SLMs or local models via Ollama/vLLM), and escalates complex queries or fallback errors to Tier-1 Frontier models (OpenAI, Anthropic).
