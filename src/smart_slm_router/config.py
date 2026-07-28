@@ -1,6 +1,6 @@
-"""Configuration settings for RouteLLM using Pydantic v2."""
+"""Configuration settings for Smart SLM Router using Pydantic v2."""
 
-from typing import List, Dict
+from typing import List
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -13,7 +13,7 @@ class ModelPricing(BaseSettings):
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_prefix="ROUTELLM_",
+        env_prefix="SMART_SLM_ROUTER_",
         env_file=".env",
         env_file_encoding="utf-8",
         extra="ignore"
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     # Server settings
     host: str = Field(default="0.0.0.0", description="Proxy server host")
     port: int = Field(default=8000, description="Proxy server port")
-    api_key: str = Field(default="sk-routellm-local", description="Master API Key for RouteLLM proxy authentication")
+    api_key: str = Field(default="sk-smart-slm-local", description="Master API Key for Smart SLM Router proxy authentication")
 
     # SLM (Tier 2 / Cheap Model) Settings
     slm_base_url: str = Field(

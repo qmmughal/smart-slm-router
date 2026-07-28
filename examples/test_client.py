@@ -1,4 +1,4 @@
-"""Sample client script demonstrating how Python applications connect to RouteLLM proxy."""
+"""Sample client script demonstrating how Python applications connect to Smart SLM Router proxy."""
 
 import json
 import time
@@ -7,7 +7,7 @@ import httpx
 
 PROXY_URL = "http://localhost:8000/v1"
 METRICS_URL = "http://localhost:8000/metrics"
-API_KEY = "sk-routellm-local"
+API_KEY = "sk-smart-slm-local"
 
 
 def test_simple_query():
@@ -28,7 +28,7 @@ def test_simple_query():
         
         if response.status_code == 200:
             data = response.json()
-            meta = data.get("routellm_meta", {})
+            meta = data.get("router_meta", {})
             content = data["choices"][0]["message"]["content"]
             print(f"Status: 200 OK ({elapsed}ms)")
             print(f"Routed Backend : {meta.get('routed_backend')} ({meta.get('routed_model')})")
@@ -38,7 +38,7 @@ def test_simple_query():
         else:
             print(f"Failed with status {response.status_code}: {response.text}")
     except Exception as e:
-        print(f"Connection error (Ensure RouteLLM proxy is running on localhost:8000): {e}")
+        print(f"Connection error (Ensure Smart SLM Router proxy is running on localhost:8000): {e}")
 
 
 def test_complex_code_query():
@@ -66,7 +66,7 @@ def test_complex_code_query():
         
         if response.status_code == 200:
             data = response.json()
-            meta = data.get("routellm_meta", {})
+            meta = data.get("router_meta", {})
             print(f"Status: 200 OK ({elapsed}ms)")
             print(f"Routed Backend : {meta.get('routed_backend')} ({meta.get('routed_model')})")
             print(f"Decision Latency: {meta.get('decision_latency_ms')}ms")
@@ -110,7 +110,7 @@ def test_streaming_query():
 
 
 def fetch_metrics():
-    print("\n--- RouteLLM Metrics Summary ---")
+    print("\n--- Smart SLM Router Metrics Summary ---")
     try:
         res = httpx.get(METRICS_URL, timeout=5.0)
         if res.status_code == 200:
@@ -124,7 +124,7 @@ def fetch_metrics():
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("   RouteLLM Proxy Integration Test Suite")
+    print("   Smart SLM Router Proxy Integration Test Suite")
     print("=" * 60)
     test_simple_query()
     test_complex_code_query()

@@ -1,11 +1,11 @@
-"""Observability and Cost Tracking module for RouteLLM proxy."""
+"""Observability and Cost Tracking module for Smart SLM Router proxy."""
 
 import time
 import asyncio
-from typing import Dict, Any, List
-from pydantic import BaseModel, Field
+from typing import List
+from pydantic import BaseModel
 
-from routellm.config import settings
+from smart_slm_router.config import settings
 
 
 class RequestLogEntry(BaseModel):

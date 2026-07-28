@@ -2,11 +2,11 @@
 
 import re
 import time
-from typing import Dict, Any, List, Tuple, Optional
+from typing import Dict, Any, List, Optional
 from pydantic import BaseModel
 import tiktoken
 
-from routellm.config import settings
+from smart_slm_router.config import settings
 
 
 class ClassificationResult(BaseModel):

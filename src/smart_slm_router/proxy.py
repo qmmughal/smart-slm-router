@@ -1,26 +1,26 @@
-"""Transparent OpenAI API Proxy with Smart Routing and Fallback Escalation."""
+"""Transparent OpenAI API Proxy with Smart SLM Routing and Fallback Escalation."""
 
 import json
 import time
 import logging
 from typing import AsyncGenerator, Dict, Any, Optional
 
-from fastapi import FastAPI, Request, HTTPException, Depends, Header
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 import httpx
 
-from routellm.config import settings
-from routellm.classifier import IntentClassifier
-from routellm.metrics import metrics_tracker, RequestLogEntry
+from smart_slm_router.config import settings
+from smart_slm_router.classifier import IntentClassifier
+from smart_slm_router.metrics import metrics_tracker
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(name)s | %(message)s")
-logger = logging.getLogger("routellm.proxy")
+logger = logging.getLogger("smart_slm_router.proxy")
 
 app = FastAPI(
-    title="RouteLLM Proxy",
-    description="Smart LLM Router & Fallback Proxy for OpenAI Compatible Applications",
+    title="Smart SLM Router Proxy",
+    description="Smart SLM Router & Fallback Proxy for OpenAI Compatible Applications",
     version="0.1.0"
 )
 
@@ -45,7 +45,7 @@ async def startup_event():
         timeout=httpx.Timeout(settings.httpx_timeout_seconds),
         limits=httpx.Limits(max_keepalive_connections=100, max_connections=200)
     )
-    logger.info(f"RouteLLM started. SLM Endpoint: {settings.slm_base_url} ({settings.slm_model_name}) | Frontier Endpoint: {settings.frontier_base_url} ({settings.frontier_model_name})")
+    logger.info(f"Smart SLM Router started. SLM Endpoint: {settings.slm_base_url} ({settings.slm_model_name}) | Frontier Endpoint: {settings.frontier_base_url} ({settings.frontier_model_name})")
 
 
 @app.on_event("shutdown")
@@ -53,7 +53,7 @@ async def shutdown_event():
     global httpx_client
     if httpx_client:
         await httpx_client.aclose()
-    logger.info("RouteLLM proxy shut down successfully.")
+    logger.info("Smart SLM Router proxy shut down successfully.")
 
 
 def get_backend_params(target: str) -> tuple[str, str, str]:
@@ -107,7 +107,6 @@ async def stream_chunk_generator(
 ) -> AsyncGenerator[bytes, None]:
     """Forward SSE stream chunks to client and record token metrics upon completion."""
     completion_tokens_estimate = 0
-    buffer = ""
 
     try:
         async for line in response.aiter_lines():
@@ -235,8 +234,8 @@ async def chat_completions(request: Request):
             completion_tokens=completion_tokens
         )
 
-        # Inject RouteLLM metadata in response header/JSON
-        res_data["routellm_meta"] = {
+        # Inject Smart SLM Router metadata in response JSON
+        res_data["router_meta"] = {
             "routed_backend": target_backend,
             "routed_model": routed_model,
             "fallback_triggered": fallback_triggered,

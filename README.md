@@ -1,13 +1,13 @@
-# RouteLLM 🚀
+# Smart SLM Router 🚀
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com)
 [![OpenAI Compatible](https://img.shields.io/badge/API-OpenAI%20Compatible-412991.svg)](https://platform.openai.com/docs/api-reference)
 
-> **Production-grade, Zero-Dependency-Bloat Smart LLM Router & Fallback Proxy**
+> **Production-grade, Zero-Dependency-Bloat Smart SLM Router & Fallback Proxy**
 
-`RouteLLM` is an ultra-fast (<15ms decision latency), asynchronous local proxy fully compatible with the **OpenAI API specification**. It intercepts inbound LLM requests from Python applications, evaluates prompt complexity locally using sub-millisecond heuristics, routes cheap/simple queries to Small Language Models (SLMs or local models via Ollama/vLLM), and escalates complex queries or fallback errors to Tier-1 Frontier models (OpenAI, Anthropic).
+`Smart SLM Router` is an ultra-fast (<15ms decision latency), asynchronous local proxy fully compatible with the **OpenAI API specification**. It intercepts inbound LLM requests from Python applications, evaluates prompt complexity locally using sub-millisecond heuristics, routes cheap/simple queries to Small Language Models (SLMs or local models via Ollama/vLLM), and escalates complex queries or fallback errors to Tier-1 Frontier models (OpenAI, Anthropic).
 
 ---
 
@@ -15,7 +15,7 @@
 
 - **⚡ Sub-15ms Local Classifier:** Zero API network latency incurred to decide model routing. Uses length heuristics, pre-compiled token regex patterns, and tool-call indicators.
 - **🔌 100% OpenAI Specification Compatible:** Drop-in replacement for existing Python OpenAI SDK applications. Just swap `base_url` and `api_key`.
-- **🛡️ Automatic Transparent Fallback:** If an SLM returns a JSON parse error, model refusal, or connection failure, RouteLLM transparently retries and escalates to the Frontier model without failing the client request.
+- **🛡️ Automatic Transparent Fallback:** If an SLM returns a JSON parse error, model refusal, or connection failure, Smart SLM Router transparently retries and escalates to the Frontier model without failing the client request.
 - **🌊 Streaming (SSE) & Non-Streaming Support:** Full support for `stream=True` chunk passthrough.
 - **📊 Real-Time Observability & Cost Metrics:** `/metrics` endpoint calculating USD cost saved in real time based on input/output token counts.
 
@@ -27,7 +27,7 @@
 sequenceDiagram
     autonumber
     participant App as Python Application
-    participant Proxy as RouteLLM Proxy
+    participant Proxy as Smart SLM Router Proxy
     participant Classifier as Intent Classifier (<15ms)
     participant SLM as SLM Backend (Ollama/gpt-4o-mini)
     participant Frontier as Frontier Model (GPT-4o/Claude)
@@ -57,9 +57,9 @@ sequenceDiagram
 
 ## 📈 Cost-Savings Benchmark Matrix
 
-By offloading simple conversational, classification, and formatting tasks to SLMs while reserving Frontier models for technical code generation and deep reasoning, `RouteLLM` dramatically reduces API bills:
+By offloading simple conversational, classification, and formatting tasks to SLMs while reserving Frontier models for technical code generation and deep reasoning, `Smart SLM Router` dramatically reduces API bills:
 
-| Query Type | Typical Ratio | Route Target | Baseline Cost (1M Tokens) | RouteLLM Cost (1M Tokens) | Savings % |
+| Query Type | Typical Ratio | Route Target | Baseline Cost (1M Tokens) | Smart SLM Router Cost (1M Tokens) | Savings % |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Short Q&A / Summarization** | 60% | Local SLM / `llama3:8b` | $6.25 (Frontier) | $0.00 - $0.37 (SLM) | **~94%** |
 | **Classification / Extract** | 25% | `gpt-4o-mini` | $6.25 (Frontier) | $0.37 (SLM) | **~94%** |
@@ -77,8 +77,8 @@ By offloading simple conversational, classification, and formatting tasks to SLM
 ### Installation
 
 ```bash
-git clone https://github.com/qmmughal/routellm.git
-cd routellm
+git clone https://github.com/qmmughal/smart-slm-router.git
+cd smart-slm-router
 pip install -e .
 ```
 
@@ -91,19 +91,19 @@ pip install fastapi uvicorn httpx pydantic pydantic-settings tiktoken
 
 ## ⚙️ Configuration Reference
 
-Configure `RouteLLM` via environment variables (or `.env` file) prefixed with `ROUTELLM_`:
+Configure `Smart SLM Router` via environment variables (or `.env` file) prefixed with `SMART_SLM_ROUTER_`:
 
 | Environment Variable | Default Value | Description |
 | :--- | :--- | :--- |
-| `ROUTELLM_HOST` | `0.0.0.0` | Host address for RouteLLM proxy |
-| `ROUTELLM_PORT` | `8000` | Port for RouteLLM proxy |
-| `ROUTELLM_SLM_BASE_URL` | `http://localhost:11434/v1` | Base URL for SLM provider (e.g. Ollama) |
-| `ROUTELLM_SLM_MODEL_NAME` | `llama3:8b` | Default SLM model name |
-| `ROUTELLM_FRONTIER_BASE_URL` | `https://api.openai.com/v1` | Base URL for Frontier model provider |
-| `ROUTELLM_FRONTIER_MODEL_NAME` | `gpt-4o` | Default Frontier model name |
-| `ROUTELLM_FRONTIER_API_KEY` | `""` | API Key for Frontier provider |
-| `ROUTELLM_MAX_SLM_TOKENS` | `450` | Maximum token threshold before escalating to Frontier |
-| `ROUTELLM_AUTO_FALLBACK_ENABLED` | `True` | Automatically retry on Frontier if SLM fails |
+| `SMART_SLM_ROUTER_HOST` | `0.0.0.0` | Host address for Smart SLM Router proxy |
+| `SMART_SLM_ROUTER_PORT` | `8000` | Port for Smart SLM Router proxy |
+| `SMART_SLM_ROUTER_SLM_BASE_URL` | `http://localhost:11434/v1` | Base URL for SLM provider (e.g. Ollama) |
+| `SMART_SLM_ROUTER_SLM_MODEL_NAME` | `llama3:8b` | Default SLM model name |
+| `SMART_SLM_ROUTER_FRONTIER_BASE_URL` | `https://api.openai.com/v1` | Base URL for Frontier model provider |
+| `SMART_SLM_ROUTER_FRONTIER_MODEL_NAME` | `gpt-4o` | Default Frontier model name |
+| `SMART_SLM_ROUTER_FRONTIER_API_KEY` | `""` | API Key for Frontier provider |
+| `SMART_SLM_ROUTER_MAX_SLM_TOKENS` | `450` | Maximum token threshold before escalating to Frontier |
+| `SMART_SLM_ROUTER_AUTO_FALLBACK_ENABLED` | `True` | Automatically retry on Frontier if SLM fails |
 
 ---
 
@@ -113,10 +113,10 @@ Configure `RouteLLM` via environment variables (or `.env` file) prefixed with `R
 
 ```bash
 # Start proxy with default settings
-python -m routellm.main
+python -m smart_slm_router.main
 
 # Or via CLI script
-routellm --port 8000
+smart-slm-router --port 8000
 ```
 
 ### 2. Connect via OpenAI Python SDK
@@ -124,10 +124,10 @@ routellm --port 8000
 ```python
 from openai import OpenAI
 
-# Simply set base_url to RouteLLM proxy endpoint!
+# Simply set base_url to Smart SLM Router proxy endpoint!
 client = OpenAI(
     base_url="http://localhost:8000/v1",
-    api_key="sk-routellm-local"
+    api_key="sk-smart-slm-local"
 )
 
 # Simple query -> Automatically routed to local SLM
